@@ -19,6 +19,9 @@ fprintf('=== 加载实验数据 ===\n');
 % 加载 temp_data.mat
 data = load('temp_data.mat');
 
+% 环境温度
+T_amb = 14;  % °C (测试时室温)
+
 % 提取工况 1 数据 (J_loss = 652W)
 time1 = data.con1.time(:);
 T_case1 = data.con1.case(:);

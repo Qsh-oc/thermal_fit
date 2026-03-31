@@ -107,6 +107,9 @@ def load_experimental_data(mat_path):
     """
     data = scipy.io.loadmat(mat_path)
     
+    # 环境温度
+    T_amb = 14  # °C (测试时室温)
+    
     # 工况 1 (J_loss = 652W)
     con1 = data['con1'][0, 0]
     data1 = {
@@ -115,7 +118,8 @@ def load_experimental_data(mat_path):
         'coilF': con1['coilF'].flatten(),
         'coilB': con1['coilB'].flatten(),
         'coilM': con1['coilM'].flatten(),
-        'J_loss': 652
+        'J_loss': 652,
+        'T_amb': T_amb
     }
     data1['T_coil'] = (data1['coilF'] + data1['coilB'] + data1['coilM']) / 3
     
@@ -127,7 +131,8 @@ def load_experimental_data(mat_path):
         'coilF': con2['coilF'].flatten(),
         'coilB': con2['coilB'].flatten(),
         'coilM': con2['coilM'].flatten(),
-        'J_loss': 452
+        'J_loss': 452,
+        'T_amb': T_amb
     }
     data2['T_coil'] = (data2['coilF'] + data2['coilB'] + data2['coilM']) / 3
     
