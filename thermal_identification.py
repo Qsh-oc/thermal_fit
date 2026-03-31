@@ -114,6 +114,10 @@ def load_experimental_data(mat_path):
     """
     加载实验数据
     
+    支持两种数据格式：
+    1. 嵌套结构：data['con1'][0,0]['time']
+    2. 直接数组：data['con1']['time'][0,0]
+    
     Returns:
         data1, data2: 两个工况的数据字典
     """
@@ -122,27 +126,42 @@ def load_experimental_data(mat_path):
     # 环境温度
     T_amb = 14  # °C (测试时室温)
     
+    def extract_field(con, field_name):
+        """提取字段并展平为 1D 数组"""
+        val = con[field_name]
+        # 处理嵌套结构
+        if val.ndim == 2 and val.shape[0] == 1:
+            val = val[0, 0]
+        return val.flatten()
+    
     # 工况 1 (J_loss = 652W)
-    con1 = data['con1'][0, 0]
+    con1 = data['con1']
+    # 检查数据结构类型
+    if con1.ndim == 2 and con1.shape == (1, 1):
+        con1 = con1[0, 0]
+    
     data1 = {
-        'time': con1['time'].flatten(),
-        'T_case': con1['case'].flatten(),
-        'coilF': con1['coilF'].flatten(),
-        'coilB': con1['coilB'].flatten(),
-        'coilM': con1['coilM'].flatten(),
+        'time': extract_field(con1, 'time'),
+        'T_case': extract_field(con1, 'case'),
+        'coilF': extract_field(con1, 'coilF'),
+        'coilB': extract_field(con1, 'coilB'),
+        'coilM': extract_field(con1, 'coilM'),
         'J_loss': 652,
         'T_amb': T_amb
     }
     data1['T_coil'] = (data1['coilF'] + data1['coilB'] + data1['coilM']) / 3
     
     # 工况 2 (J_loss = 452W)
-    con2 = data['con2'][0, 0]
+    con2 = data['con2']
+    if con2.ndim == 2 and con2.shape == (1, 1):
+        con2 = con2[0, 0]
+    
     data2 = {
-        'time': con2['time'].flatten(),
-        'T_case': con2['case'].flatten(),
-        'coilF': con2['coilF'].flatten(),
-        'coilB': con2['coilB'].flatten(),
-        'coilM': con2['coilM'].flatten(),
+        'time': extract_field(con2, 'time'),
+        'T_case': extract_field(con2, 'case'),
+        'coilF': extract_field(con2, 'coilF'),
+        'coilB': extract_field(con2, 'coilB'),
+        'coilM': extract_field(con2, 'coilM'),
         'J_loss': 452,
         'T_amb': T_amb
     }
